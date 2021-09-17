@@ -33,7 +33,7 @@ router.post('/register', async (req, res, next) => {
 try {
   const {username, password} = req.body
 
-  const already = User.findBy({ username })
+  const already = User.findBy(username)
   if(already) {
     return next({ message: "username taken"})
   } 
