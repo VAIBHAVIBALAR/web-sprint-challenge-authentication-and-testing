@@ -5,7 +5,6 @@ const router = require('express').Router();
 const User = require('../users/users-model')
 
 router.post('/register', async (req, res, next) => {
-  res.end('implement register, please!');
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -33,11 +32,21 @@ router.post('/register', async (req, res, next) => {
   */
 try {
   const {username, password} = req.body
+
+  const already = User.findBy({ username })
+  if(already) {
+    return next({ message: "username taken"})
+  } 
+  
+  if(!username || !password){
+    return next({ message: "username and password required"})
+  }
   const hash = bcrypt.hashSync(password, 8)
   const newUser = {username, password:hash}
   const user = await User.add(newUser)
-
   res.status(201).json(user)
+
+
 } catch (err){
   next(err)
 }
