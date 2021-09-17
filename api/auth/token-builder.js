@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-
+const JWT_SECRET = "hello"
 module.exports = function (user) {
   const payload = {
     subject: user.id,
@@ -10,6 +10,7 @@ module.exports = function (user) {
   }
   const token = jwt.sign(
     payload,
+    JWT_SECRET,
     options,
   )
   return token
