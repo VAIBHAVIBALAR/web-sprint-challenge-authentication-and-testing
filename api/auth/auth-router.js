@@ -31,24 +31,25 @@ router.post('/register', async (req, res, next) => {
       the response body should include a string exactly as follows: "username taken".
   */
 try {
-    const {username, password} = req.body
+      const {username, password} = req.body
 
   if(username && password){
+          const already = await User.findBy({ username })
 
-     const already = await User.findBy({ username })
-    if(already.length) {
-      res.status(401).json({ message: "username taken"})
-    } else {
-      const hash = bcrypt.hashSync(password, 8)
-      const newUser = { username, password: hash }
-      const user = await User.add(newUser)
-      res.status(201).json({ 
-        id: user,
-        username: username,
-        password: hash
-      })
-    }
-  } else if(!username || !password){
+       if(already.length) {
+           res.status(401).json({ message: "username taken"})
+        } else {
+                const hash = bcrypt.hashSync(password, 8)
+                const newUser = { username, password: hash }
+                const user = await User.add(newUser)
+                res.status(201).json({ 
+                 id: user,
+                  username: username,
+                   password: hash
+                })
+              }
+  }else if(!username || !password)
+  {
     return next({ status: 401 , message: "username and password required"})
   } 
   
@@ -83,9 +84,10 @@ router.post('/login', (req, res, next) => {
   */
  const  { username, password} = req.body
 
- if (!username || !password) {
-  next({ message : "username and password required"})
- }
+ if (!username || !password)
+    {
+     next({status: 401, message : "username and password required"})
+     }
  User.findBy({ username })
  .then(([user]) => {
    if(!user){
@@ -93,20 +95,20 @@ router.post('/login', (req, res, next) => {
       status: 401, message: "invalid credentials"
      })
    }
-   const compare = bcrypt.compareSync(password, user.password)
-   console.log(compare)
-   if(user && compare){
-     const token = tokenBuilder(user)
-     res.status(200).json({
-       message: `welcome ${user.username}`,
-       token,
-     })
-   } else if(!user || !compare){
-     next({
-       status: 401, message: "invalid credentials"
-     })
-   }
-}) 
+      const compare = bcrypt.compareSync(password, user.password)
+      if(user && compare){
+         const token = tokenBuilder(user)
+          res.status(200).json({
+            message: `welcome ${user.username}`,
+            token,
+           })
+       } else if(!user || !compare)
+       {
+        next({
+              status: 401, message: "invalid credentials"
+             })
+       }
+  }) 
 .catch(next)
 })
 

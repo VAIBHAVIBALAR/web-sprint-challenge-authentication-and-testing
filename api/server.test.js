@@ -2,7 +2,6 @@
 const request = require('supertest')
 const server = require('./server')
 const db = require('../data/dbConfig')
-const jokes = require('./jokes/jokes-data')
 
 test('sanity', () => {
   expect(true).toBe(true)
