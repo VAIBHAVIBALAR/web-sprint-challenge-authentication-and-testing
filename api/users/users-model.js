@@ -4,8 +4,8 @@ function find() {
     return db("users").select("id", "username").orderBy("id")
 }
 
-function findBy(filter){
-    return db("users").where(filter).orderBy("id")
+async function findBy(filter){
+    return await db("users").where(filter).orderBy("id")
 }
 
 async function add(user) {

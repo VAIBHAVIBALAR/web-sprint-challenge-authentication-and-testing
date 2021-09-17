@@ -35,9 +35,9 @@ try {
 
   if(username && password){
 
-     const already = User.findBy({ username })
+     const already = await User.findBy({ username })
     if(already.length) {
-      return next({ message: "username taken"})
+      res.status(401).json({ message: "username taken"})
     } else {
       const hash = bcrypt.hashSync(password, 8)
       const newUser = { username, password: hash }
