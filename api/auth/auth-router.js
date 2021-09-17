@@ -44,7 +44,6 @@ try {
       const newUser = { username, password: hash }
       const user = await User.add(newUser)
       res.status(201).json(user)
-      next()
     }
   } else if(!username || !password){
     return next({ status: 401 , message: "username and password required"})
