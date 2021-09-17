@@ -36,7 +36,6 @@ try {
   if(username && password){
 
      const already = await User.findBy({ username })
-
     if(already.length) {
       res.status(401).json({ message: "username taken"})
     } else {
@@ -54,7 +53,7 @@ try {
   } 
   
 } catch (err){
- res.status(401).json({message: err.message})
+  next(err)
 }
 });
 
@@ -108,9 +107,7 @@ router.post('/login', (req, res, next) => {
      })
    }
 }) 
-.catch ((err) => {
-  res.status(401).json({message: err.message})
-})
+.catch(next)
 })
 
 module.exports = router;
