@@ -31,28 +31,31 @@ router.post('/register', async (req, res, next) => {
       the response body should include a string exactly as follows: "username taken".
   */
 try {
+
   const {username, password} = req.body
 
-  if(!username || !password){
-    return next({ message: "username and password required"})
-  } 
+  if(username && password){
 
-  const already = User.findBy(username)
-  if(already) {
-    return next({ message: "username taken"})
-  } else {
-    const hash = bcrypt.hashSync(password, 8)
-    const newUser = {username, password:hash}
-    const user = await User.add(newUser)
-    res.status(201).json(user)
-  }
+    const already = User.findBy(username)
+    if(already) {
+      return next({ message: "username taken"})
+    } else {
+      const hash = bcrypt.hashSync(password, 8)
+      const newUser = { username, password: hash }
+      const user = await User.add(newUser)
+      res.status(201).json(user)
+      next()
+    }
+  } else if(!username || !password){
+    return next({ status: 401 , message: "username and password required"})
+  } 
+  
 } catch (err){
   next(err)
 }
 });
 
 router.post('/login', (req, res, next) => {
-  res.end('implement login, please!');
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
